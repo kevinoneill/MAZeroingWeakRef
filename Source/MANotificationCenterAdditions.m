@@ -17,12 +17,10 @@
     MAZeroingWeakRef *ref = [[MAZeroingWeakRef alloc] initWithTarget: observer];
     
     id noteObj = [self addObserverForName: name object:object queue: nil usingBlock: ^(NSNotification *note) {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        
-        id observer = [ref target];
-        [observer performSelector: selector withObject: note];
-        
-        [pool release];
+      @autoreleasepool {
+        id target = [ref target];
+        [target performSelector: selector withObject: note];
+      }
     }];
     
     [ref setCleanupBlock: ^(id target) {
